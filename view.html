@@ -1,0 +1,297 @@
+<head>
+	<meta charset="utf-8">
+	<link rel="stylesheet" href="style.min.css" type="text/css">
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+		integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+	<script src="angular.min.js"></script>
+	<script>
+		document.write('<base href="' + document.location + '" />');
+	</script>
+</head>
+
+<body ng-app="ytdApp" ng-controller="ytdController" ng-style='boyYtdStyle'>
+	<div id="player-container-outer"></div>
+	<!-- Base HTML -->
+	<div class="base-html">
+		<!-- Comment -->
+		<ytd-commentbox id="commentbox" class="style-scope ytd-comment-dialog-renderer" polymer2=""
+			added-attachment="none" prefilled-attachment_="none">
+
+			<yt-img-shadow id="author-thumbnail" class="style-scope ytd-commentbox no-transition"
+				style="background-color: transparent;" loaded=""><img id="img" class="style-scope yt-img-shadow"
+					alt="Mận Nguyễn" width="40" height="40"
+					src="https://yt3.ggpht.com/-HU2s5KVaCT0/AAAAAAAAAAI/AAAAAAAAAAA/1zUy7BC5Yh8/s48-c-k-no-mo-rj-c0xffffff/photo.jpg">
+			</yt-img-shadow>
+			<div id="main" class="style-scope ytd-commentbox">
+				<div id="creation-box" class="not-focused style-scope ytd-commentbox">
+					<paper-input-container id="input-container" no-label-float="" use-v2-underline=""
+						class="style-scope ytd-commentbox">
+						<!--css-build:shady-->
+
+						<div class="floated-label-placeholder style-scope paper-input-container" aria-hidden="true"
+							hidden="">
+							&nbsp;</div>
+
+						<div class="input-wrapper style-scope paper-input-container">
+							<span class="prefix style-scope paper-input-container"></span>
+
+							<div id="labelAndInputContainer" class="input-content style-scope paper-input-container">
+
+								<div slot="after-input" class="paper-input-input style-scope ytd-commentbox">
+									<ytd-emoji-input id="emoji" class="style-scope ytd-commentbox">
+
+										<ytd-user-mention-autosuggest-input slot="input"
+											class="style-scope ytd-commentbox">
+
+											<yt-formatted-string id="contenteditable-textarea" slot="input"
+												enable-content-editable="true" maxlength="10000" plaintext-only="true"
+												required="true" split-lines="" class="style-scope ytd-commentbox">
+												<div id="contenteditable-root" contenteditable="true" dir="auto"
+													class="style-scope yt-formatted-string"
+													aria-label="Thêm nhận xét công khai...">Nội dung hay nhưng ngắn quáa
+												</div>
+											</yt-formatted-string>
+											<iron-dropdown id="iron-dropdown" no-auto-focus="" no-overlap="true"
+												class="style-scope ytd-user-mention-autosuggest-input"
+												horizontal-align="left" vertical-align="top" aria-disabled="false"
+												aria-hidden="true" style="outline: none; display: none;">
+												<!--css-build:shady-->
+
+												<div id="contentWrapper" class="style-scope iron-dropdown">
+													<ytd-user-mention-suggestions-dropdown id="dropdown"
+														class="dropdown-content style-scope ytd-user-mention-autosuggest-input"
+														slot="dropdown-content" role="listbox">
+
+
+														<dom-repeat index-as="index" notify-dom-change=""
+															class="style-scope ytd-user-mention-suggestions-dropdown"
+															style="display: none;"><template is="dom-repeat"></template>
+														</dom-repeat>
+													</ytd-user-mention-suggestions-dropdown>
+												</div>
+											</iron-dropdown>
+										</ytd-user-mention-autosuggest-input>
+										<iron-dropdown id="dropdown" allow-outside-scroll="" no-auto-focus=""
+											vertical-align="bottom" class="style-scope ytd-emoji-input"
+											horizontal-align="left" aria-disabled="false" aria-hidden="true"
+											style="outline: none; display: none;">
+											<!--css-build:shady-->
+
+											<div id="contentWrapper" class="style-scope iron-dropdown">
+												<div id="dropdown-content"
+													class="dropdown-content style-scope ytd-emoji-input"
+													slot="dropdown-content">
+												</div>
+											</div>
+										</iron-dropdown>
+									</ytd-emoji-input>
+								</div>
+								<ytd-backstage-dismissable-attachment id="dismissable-attachment" slot="after-input"
+									class="style-scope ytd-commentbox" hidden="">
+
+
+									<div id="attachment-preview-container"
+										class="style-scope ytd-backstage-dismissable-attachment">
+										<div id="attachment-preview"
+											class="style-scope ytd-backstage-dismissable-attachment">
+										</div>
+										<div id="dismiss-button"
+											class="style-scope ytd-backstage-dismissable-attachment">
+										</div>
+									</div>
+								</ytd-backstage-dismissable-attachment>
+								<div id="attachment-preview" slot="after-input" class="style-scope ytd-commentbox">
+								</div>
+								<div id="image-select" class="paper-input-input style-scope ytd-commentbox"
+									slot="after-input" hidden="">
+								</div>
+								<ytd-backstage-video-link-attachment id="video-link-attachment" slot="after-input"
+									class="style-scope ytd-commentbox" hidden="">
+
+									<div id="video-preview" class="style-scope ytd-backstage-video-link-attachment">
+									</div>
+									<div id="cancel-button" class="style-scope ytd-backstage-video-link-attachment">
+									</div>
+								</ytd-backstage-video-link-attachment>
+							</div>
+
+							<span class="suffix style-scope paper-input-container"></span>
+						</div>
+
+						<div class="underline style-scope paper-input-container" style="height: 0px;">
+							<div class="unfocused-line style-scope paper-input-container"></div>
+							<div class="focused-line style-scope paper-input-container"></div>
+						</div>
+
+						<div class="add-on-content style-scope paper-input-container">
+
+						</div>
+					</paper-input-container>
+				</div>
+				<ytd-poll-attachment id="poll-attachment" class="style-scope ytd-commentbox" hidden="" polymer2="">
+
+					<div id="poll-options" class="style-scope ytd-poll-attachment">
+						<dom-repeat id="repeat" class="style-scope ytd-poll-attachment" style="display: none;"><template
+								is="dom-repeat"></template></dom-repeat>
+					</div>
+					<div id="add-option" class="style-scope ytd-poll-attachment"></div>
+				</ytd-poll-attachment>
+				<div id="footer" class="style-scope ytd-commentbox">
+					<span id="emoji-button" class="style-scope ytd-commentbox" hidden=""></span>
+					<div id="attachments" class="style-scope ytd-commentbox" hidden="">
+						<span id="video-link-button" class="style-scope ytd-commentbox"></span>
+						<span id="poll-button" class="style-scope ytd-commentbox"></span>
+						<span id="image-button" class="style-scope ytd-commentbox"></span>
+					</div>
+					<div id="footer-text" class="style-scope ytd-commentbox">
+						<yt-formatted-string id="footer-message" class="footer-alert-message style-scope ytd-commentbox"
+							hidden=""></yt-formatted-string>
+						<yt-formatted-string id="zero-step-footer-text" class="style-scope ytd-commentbox">
+						</yt-formatted-string>
+					</div>
+					<div id="access-restrictions-selector" class="style-scope ytd-commentbox"></div>
+					<div id="buttons" class="style-scope ytd-commentbox">
+						<ytd-button-renderer id="cancel-button"
+							class="style-scope ytd-commentbox style-text size-default" button-renderer=""
+							is-paper-button=""><a class="yt-simple-endpoint style-scope ytd-button-renderer"
+								tabindex="-1">
+								<paper-button id="button"
+									class="style-scope ytd-button-renderer style-text size-default" role="button"
+									tabindex="0" animated="" elevation="0" aria-disabled="false" aria-label="Hủy">
+									<!--css-build:shady-->
+									<yt-formatted-string id="text"
+										class="style-scope ytd-button-renderer style-text size-default">Hủy
+									</yt-formatted-string>
+								</paper-button>
+							</a></ytd-button-renderer>
+						<ytd-button-renderer id="submit-button"
+							class="style-scope ytd-commentbox style-primary size-default" button-renderer=""
+							is-paper-button=""><a class="yt-simple-endpoint style-scope ytd-button-renderer"
+								tabindex="-1">
+								<paper-button id="button"
+									class="style-scope ytd-button-renderer style-primary size-default" role="button"
+									tabindex="0" animated="" elevation="0" aria-disabled="false" aria-label="Nhận xét"
+									style="">
+									<!--css-build:shady-->
+									<yt-formatted-string id="text"
+										class="style-scope ytd-button-renderer style-primary size-default">Nhận xét
+									</yt-formatted-string>
+								</paper-button>
+							</a></ytd-button-renderer>
+					</div>
+				</div>
+				<div id="emojis" class="style-scope ytd-commentbox" hidden="">
+					<span id="emoji-picker" class="style-scope ytd-commentbox"></span>
+				</div>
+			</div>
+			<paper-spinner-lite class="style-scope ytd-commentbox" aria-hidden="true">
+				<!--css-build:shady-->
+				<div id="spinnerContainer" class="  style-scope paper-spinner-lite">
+					<div class="spinner-layer style-scope paper-spinner-lite">
+						<div class="circle-clipper left style-scope paper-spinner-lite">
+							<div class="circle style-scope paper-spinner-lite"></div>
+						</div>
+						<div class="circle-clipper right style-scope paper-spinner-lite">
+							<div class="circle style-scope paper-spinner-lite"></div>
+						</div>
+					</div>
+				</div>
+			</paper-spinner-lite>
+		</ytd-commentbox>
+		<!-- Like -->
+		<ytd-toggle-button-renderer class="style-scope ytd-menu-renderer force-icon-button style-default-active"
+			button-renderer="" is-icon-button=""><a class="yt-simple-endpoint style-scope ytd-toggle-button-renderer"
+				tabindex="-1">
+				<yt-icon-button id="button" class="style-scope ytd-toggle-button-renderer style-default-active"
+					aria-pressed="true"><button id="button" class="style-scope yt-icon-button"
+						aria-label="và 5 người khác thích video này">
+						<yt-icon class="style-scope ytd-toggle-button-renderer"><svg viewBox="0 0 24 24"
+								preserveAspectRatio="xMidYMid meet" focusable="false" class="style-scope yt-icon"
+								style="pointer-events: none; display: block; width: 100%; height: 100%;">
+								<g class="style-scope yt-icon">
+									<path
+										d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"
+										class="style-scope yt-icon"></path>
+								</g>
+							</svg>
+
+
+						</yt-icon>
+					</button>
+					<paper-ripple class="style-scope yt-icon-button circle">
+						<!--css-build:shady-->
+
+						<div id="background" class="style-scope paper-ripple" style="opacity: 0;"></div>
+						<div id="waves" class="style-scope paper-ripple"></div>
+					</paper-ripple>
+				</yt-icon-button>
+				<yt-formatted-string id="text" class="style-scope ytd-toggle-button-renderer style-default-active"
+					aria-label="5 lượt thích">5</yt-formatted-string>
+				<paper-tooltip class="style-scope ytd-toggle-button-renderer" role="tooltip" tabindex="-1"
+					style="left: 0px; right: auto; top: 44px; bottom: auto;">
+					<!--css-build:shady-->
+
+					<div id="tooltip" class="style-scope paper-tooltip hidden">
+						Tôi thích video này
+					</div>
+				</paper-tooltip>
+			</a></ytd-toggle-button-renderer>
+		<!-- Subsribe -->
+		<ytd-subscribe-button-renderer class="style-scope ytd-video-secondary-info-renderer" new-subscribe-color="">
+
+			<paper-button noink="" class="style-scope ytd-subscribe-button-renderer" role="button" tabindex="0"
+				animated="" elevation="0" aria-disabled="false" aria-label="Hủy đăng ký Phiên bản Cập nhập."
+				subscribed="">
+				<!--css-build:shady-->
+				<yt-formatted-string class="style-scope ytd-subscribe-button-renderer">Đã đăng ký <span
+						class="deemphasize style-scope yt-formatted-string">327</span></yt-formatted-string>
+				<paper-ripple class="style-scope paper-button">
+					<!--css-build:shady-->
+
+					<div id="background" class="style-scope paper-ripple"></div>
+					<div id="waves" class="style-scope paper-ripple"></div>
+				</paper-ripple>
+			</paper-button>
+			<div id="notification-preference-toggle-button" class="style-scope ytd-subscribe-button-renderer">
+				<ytd-toggle-button-renderer class="style-scope ytd-subscribe-button-renderer style-grey-text"
+					button-renderer="" new-subscribe-color="" is-icon-button="" has-no-text=""><a
+						class="yt-simple-endpoint style-scope ytd-toggle-button-renderer" tabindex="-1">
+						<yt-icon-button id="button" class="style-scope ytd-toggle-button-renderer style-grey-text"
+							aria-pressed="true"><button id="button" class="style-scope yt-icon-button"
+								aria-label="Cài đặt hiện tại là tất cả thông báo. Hãy nhấn để thay đổi cài đặt thông báo cho Phiên bản Cập nhập">
+								<yt-icon class="style-scope ytd-toggle-button-renderer"><svg viewBox="0 0 24 24"
+										preserveAspectRatio="xMidYMid meet" focusable="false"
+										class="style-scope yt-icon"
+										style="pointer-events: none; display: block; width: 100%; height: 100%;">
+										<g class="style-scope yt-icon">
+											<path
+												d="M7.58 4.08L6.15 2.65C3.75 4.48 2.17 7.3 2.03 10.5h2c.15-2.65 1.51-4.97 3.55-6.42zm12.39 6.42h2c-.15-3.2-1.73-6.02-4.12-7.85l-1.42 1.43c2.02 1.45 3.39 3.77 3.54 6.42zM18 11c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2v-5zm-6 11c.14 0 .27-.01.4-.04.65-.14 1.18-.58 1.44-1.18.1-.24.15-.5.15-.78h-4c.01 1.1.9 2 2.01 2z"
+												class="style-scope yt-icon"></path>
+										</g>
+									</svg>
+
+
+								</yt-icon>
+							</button>
+							<paper-ripple class="style-scope yt-icon-button circle">
+								<!--css-build:shady-->
+
+								<div id="background" class="style-scope paper-ripple" style="opacity: 0.009236;"></div>
+								<div id="waves" class="style-scope paper-ripple"></div>
+							</paper-ripple>
+						</yt-icon-button>
+						<paper-tooltip class="style-scope ytd-toggle-button-renderer" role="tooltip" tabindex="-1"
+							style="left: 523.164px; right: auto; top: 624px; bottom: auto;">
+							<!--css-build:shady-->
+
+							<div id="tooltip" class="style-scope paper-tooltip hidden">
+								Dừng nhận thông báo về mỗi video mới
+							</div>
+						</paper-tooltip>
+					</a></ytd-toggle-button-renderer>
+			</div>
+			<div id="notification-preference-button" class="style-scope ytd-subscribe-button-renderer"></div>
+		</ytd-subscribe-button-renderer>
+	</div>
+	<script src="js.js"></script>
+</body>
