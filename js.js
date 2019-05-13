@@ -17,50 +17,92 @@ $('body').attr('ng-app', 'ytdApp').attr('ng-controller', 'ytdController');
 $('body').append(`
 <div class="ytd-seo-panels">
     <div class="ytd-seo-panels-container">
-        <p><b>Đang xem: </b><span class="ytd-view-seconds"></span> giây</p>
-        <p>
-            <b>Đã subsribe: </b> <span>{{subsribed}}</span></br>
-            <b>Đã comment: </b> <span>{{commented}}</span></br>
-            <b>Đã like: </b> <span>{{liked}}</span></br>
-            <b>Đã notifiCation: </b> <span>{{notifiCation}}</span></br>
-        </p>
+        <div class="panel-setting">
+            <div class="fomr-container" ng-if="enableYtdHome">
+                <input type="text" id="ytdLink" ng-model="ytdLinkSubscribe" class="ytd-link" placeholder="Nhập link Youtube cần Sub" />
+                <input type="button" value="Auto Sub" ng-click="startSubscribe()" class="ytd-submit">
+            </div>
+            <p ng-if="!enableYtdHome"><b>Đang xem: </b><span class="ytd-view-seconds"></span> giây</p>
+            <b>Cài đặt thời gian: </b>
+            <label class="{{liked ? 'green-color' : 'red-color'}}" for="timeOfLike">LIKE:</label>
+            <select id="timeOfLike" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfLike" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+            <label class="{{subscribed && notifiCation ? 'green-color' : 'red-color'}}" for="timeOfSubscribe">SUBSCRIBE:</label>
+            <select id="timeOfSubscribe" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfSubscribe" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+            <label class="{{commented ? 'green-color' : 'red-color'}}" for="timeOfComment">COMMENT:</label>
+            <select id="timeOfComment" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfComment" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+            <label class="red-color" for="timeOfClose">CLOSE:</label>
+            <select id="timeOfClose" ng-options="item.value as item.name for item in timeClicks" ng-disabled="!enableYtdHome" ng-model="timeOfClose"></select>
+        </div>
     </div>
 </div>
 `);
 GM_addStyle(`
 body::before {
-    content: '';
+    content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-}
-#columns {
+  }
+  
+  iframe {
+    display: none;
+  }
+  
+  #columns {
     padding-bottom: 100px;
-}
-.ytd-seo-panels {
+  }
+  
+  .ytd-seo-panels {
     position: fixed;
-    bottom: 0;
-    left: 0;
+    top: 0;
     right: 0;
     background: #fff;
     border: 1px solid #ccc;
-    width: 100%;
     z-index: 999999;
-}
-.ytd-seo-panels-container {
-    max-width: 500px;
+  }
+  .ytd-seo-panels .ytd-seo-panels-container {
+    max-width: 666px;
     margin: 0 auto;
-    height: 100px;
     padding: 10px;
     font-size: 13px;
-}
+  }
+  .ytd-seo-panels .ytd-seo-panels-container .fomr-container {
+    width: 100%;
+    position: relative;
+    margin-bottom: 5px;
+  }
+  .ytd-seo-panels .ytd-seo-panels-container .ytd-link {
+    width: 100%;
+    padding: 5px 85px 5px 10px;
+    height: 30px;
+    box-sizing: border-box;
+  }
+  .ytd-seo-panels .ytd-seo-panels-container .ytd-submit {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 30px;
+    width: 80px;
+  }
+  .ytd-seo-panels .panel-setting select {
+    margin-right: 10px;
+  }
+  .ytd-seo-panels .red-color {
+    color: #f00;
+    font-weight: bold !important;
+  }
+  .ytd-seo-panels .green-color {
+    color: #008000;
+    font-weight: bold !important;
+  }
 `);
 (function () {
     var app = angular.module("ytdApp", []);
     app.controller("ytdController", ['$scope', '$timeout', '$interval', '$http', function ($scope, $timeout, $interval, $http) {
         $scope.timerStart;
+        $scope.showPanel = true;
         $timeout(function () {
             start();
         }, 1500);
@@ -75,133 +117,215 @@ body::before {
         function start() {
             $('.ytd-view-seconds').text(0);
             $interval.cancel($scope.timerStart);
-            // Check watch page
-            if((window.location.href).indexOf('watch') < 0) {
-                return;
-            }
-            $scope.subsribed = false;
+
+            $scope.subscribed = false;
             $scope.commented = false;
             $scope.liked = false;
             $scope.notifiCation = false;
-            $scope.enableYtdSeo = false;
+            $scope.enableYtdHome = false;
             
-            $timeout(function () {
-                $scope.enableYtdSeo = true;
-                var starttime = new Date,
-                timer = 0,
-                $subscribeButton = $('.ytd-subscribe-button-renderer')[0],
-                attrSubscribe = $subscribeButton.hasAttribute('subscribed');
-    
-                // Check like status
-                if ($('ytd-toggle-button-renderer.force-icon-button').hasClass('style-default-active')) {
-                    $scope.liked = true;
-                }
-    
-                // Check subsribe status
-                if (typeof attrSubscribe !== undefined && attrSubscribe !== false) {
-                    $scope.subsribed = true;
-                }
-    
-                // Check Notifi status
-                if($scope.subsribed) {
-                    var $notifiButton = $('#notification-preference-toggle-button')[0],
-                    attrNotifi = $($notifiButton).find('yt-icon-button').attr('aria-pressed');
-                    $scope.notifiCation = (attrNotifi === 'true');
-                }
+            let ytdUrl = new URLSearchParams(window.location.search);
 
-                $interval.cancel($scope.timerStart);
-                $scope.timerStart = $interval(function() {
-                    timer = parseInt(((new Date - starttime) / 1000).toFixed(0));
-                    $('.ytd-view-seconds').text(timer);
-    
-                    if(timer === 2 && !$scope.liked) {
-                        autoLike();
+            if(ytdUrl.has('timeOfLike') && ytdUrl.has('timeOfSubscribe') && ytdUrl.has('timeOfComment') && ytdUrl.has('timeOfClose')) {
+                $scope.enableYtdHome = false;
+                $scope.timeOfLike = parseInt(ytdUrl.get('timeOfLike'));
+                $scope.timeOfSubscribe = parseInt(ytdUrl.get('timeOfSubscribe'));
+                $scope.timeOfComment = parseInt(ytdUrl.get('timeOfComment'));
+                $scope.timeOfClose = parseInt(ytdUrl.get('timeOfClose'));
+                $timeout(function () {
+                    var starttime = new Date,
+                    timer = 0,
+                    $subscribeButton = $('.ytd-subscribe-button-renderer')[0],
+                    attrSubscribe = $subscribeButton.hasAttribute('subscribed');
+        
+                    // Check like status
+                    if ($('ytd-toggle-button-renderer.force-icon-button').hasClass('style-default-active')) {
+                        $scope.liked = true;
+                    }
+        
+                    // Check subscribe status
+                    if (typeof attrSubscribe !== undefined && attrSubscribe !== false) {
+                        $scope.subscribed = true;
+                    }
+        
+                    // Check Notifi status
+                    if($scope.subscribed) {
+                        var $notifiButton = $('#notification-preference-toggle-button')[0],
+                        attrNotifi = $($notifiButton).find('yt-icon-button').attr('aria-pressed');
+                        $scope.notifiCation = (attrNotifi === 'true');
                     }
     
-                    if(timer === 5) {
-                        if(!$scope.subsribed) {
-                            autoSubsribe();
-                        } else if(!$scope.notifiCation) {
-                            autoNotifi();
+                    $interval.cancel($scope.timerStart);
+                    $scope.timerStart = $interval(function() {
+                        timer = parseInt(((new Date - starttime) / 1000).toFixed(0));
+                        $('.ytd-view-seconds').text(timer);
+        
+                        if(timer == $scope.timeOfLike && !$scope.liked) {
+                            autoLike();
                         }
-                    }
-    
-                    if(timer === 13 && !$scope.commented) {
-                        autoComment();
-                    }
-                }, 1000);
-                // Auto comment
-                function autoComment() {
-                    $('html, body').animate({
-                        scrollTop: $(document).height() + 100
-                    }, 500, function () {
-                        var commentVisible = $($('#placeholder-area')[0]).is(':visible');
-                        if (commentVisible) {
-                            if(!$scope.commented) {
-                                $($('#placeholder-area')[0]).trigger('click');
-                                $('#contenteditable-root').text('Hay quá!!!');
-                                $('#submit-button.ytd-commentbox').removeAttr('disabled').trigger('click').attr('disabled');
-                                $scope.commented = !$scope.commented;
-                                setTimeout(() => {
-                                    $('html, body').animate({
-                                        scrollTop: 0
-                                    }, 500);
-                                }, 1000);
+        
+                        if(timer == $scope.timeOfSubscribe) {
+                            if(!$scope.subscribed) {
+                                autoSubscribe();
+                            } else if(!$scope.notifiCation) {
+                                autoNotifi();
                             }
-                        } else {
+                        }
+        
+                        if(timer == $scope.timeOfComment && !$scope.commented) {
                             autoComment();
                         }
-                    });
-                }
-                // Auto Like
-                function autoLike() {
-                    $('ytd-toggle-button-renderer.force-icon-button').each(function (index) {
+    
+                        if(timer == $scope.timeOfClose) {
+                            window.open('','_parent','');
+                            window.close();
+                        }
+                    }, 1000);
+                    // Auto comment
+                    function autoComment() {
+                        $('html, body').animate({
+                            scrollTop: $(document).height() + 100
+                        }, 500, function () {
+                            var commentVisible = $($('#placeholder-area')[0]).is(':visible');
+                            if (commentVisible) {
+                                if(!$scope.commented) {
+                                    $($('#placeholder-area')[0]).trigger('click');
+                                    $('#contenteditable-root').text('Hay quá!!!');
+                                    $('#submit-button.ytd-commentbox').removeAttr('disabled').trigger('click').attr('disabled');
+                                    $scope.commented = !$scope.commented;
+                                    setTimeout(() => {
+                                        $('html, body').animate({
+                                            scrollTop: 0
+                                        }, 500);
+                                    }, 1000);
+                                }
+                            } else {
+                                autoComment();
+                            }
+                        });
+                    }
+                    // Auto Like
+                    function autoLike() {
+                        $('ytd-toggle-button-renderer.force-icon-button').each(function (index) {
+                            $('html, body').animate({
+                                scrollTop: 0
+                            }, 500);
+                            if (index === 0) {
+                                setTimeout(() => {
+                                    $(this).trigger('click');
+                                    $scope.liked = !$scope.liked;
+                                }, 200);
+                            }
+                        });
+                    }
+                    // Auto Subscribe
+                    function autoSubscribe() {
                         $('html, body').animate({
                             scrollTop: 0
                         }, 500);
-                        if (index === 0) {
-                            setTimeout(() => {
-                                $(this).trigger('click');
-                                $scope.liked = !$scope.liked;
-                            }, 200);
-                        }
-                    });
+                        $($subscribeButton).trigger('click');
+                        $scope.subscribed = !$scope.subscribed;
+                        setTimeout(() => {
+                            autoNotifi();
+                        }, 5000);
+                    }
+        
+                    // Auto Notifi
+                    function autoNotifi() {
+                        $('html, body').animate({
+                            scrollTop: 0
+                        }, 500);
+                        var $buttonNotifi = $('#notification-preference-toggle-button.ytd-subscribe-button-renderer').find('.yt-icon-button');
+                        $($buttonNotifi).each(function (index) {
+                            $($buttonNotifi[index]).trigger('click');
+                        });
+                        // if($buttonNotifi.length > 1) {
+                        //     $($buttonNotifi[$buttonNotifi.length - 1]).trigger('click');
+                        // } else {
+                        //     $buttonNotifi.trigger('click');
+                        // }
+                        $scope.notifiCation = !$scope.notifiCation;
+                    }
+                }, 500);
+            } else {
+                $scope.enableYtdHome = true;
+                $scope.timeOfLike = 120;
+                $scope.timeOfSubscribe = 150;
+                $scope.timeOfComment = 180;
+                $scope.timeOfClose = 210;
+
+                // $scope.startSubscribe = startSubscribe();
+                $scope.startSubscribe = function() {
+                    var ytdLink = document.getElementById('ytdLink') ;
+                    var url = new URL(ytdLink.value);
+                    var query_string = url.search;
+                    var search_params = new URLSearchParams(query_string); 
+                    search_params.set('timeOfLike', $scope.timeOfLike);
+                    search_params.set('timeOfSubscribe', $scope.timeOfSubscribe);
+                    search_params.set('timeOfComment', $scope.timeOfComment);
+                    search_params.set('timeOfClose', $scope.timeOfClose);
+                    url.search = search_params.toString();
+                    var ytdLinkSubscribe = url.toString();
+                    window.open(ytdLinkSubscribe, '_blank', 'width=688, height=800');
+                    ytdLink.value = '';
                 }
-                // Auto Subsribe
-                function autoSubsribe() {
-                    $('html, body').animate({
-                        scrollTop: 0
-                    }, 500);
-                    $($subscribeButton).trigger('click');
-                    $scope.subsribed = !$scope.subsribed;
-                    setTimeout(() => {
-                        autoNotifi();
-                    }, 5000);
-                }
-    
-                // Auto Notifi
-                function autoNotifi() {
-                    $('html, body').animate({
-                        scrollTop: 0
-                    }, 500);
-                    var $buttonNotifi = $('#notification-preference-toggle-button.ytd-subscribe-button-renderer').find('.yt-icon-button');
-                    $($buttonNotifi).each(function (index) {
-                        $($buttonNotifi[index]).trigger('click');
-                    });
-                    // if($buttonNotifi.length > 1) {
-                    //     $($buttonNotifi[$buttonNotifi.length - 1]).trigger('click');
-                    // } else {
-                    //     $buttonNotifi.trigger('click');
-                    // }
-                    $scope.notifiCation = !$scope.notifiCation;
-                }
-            }, 500);
+            }         
+            getTimeForClick();
+            function getTimeForClick() {
+                var timeClicks = [{
+                    name: '5\'',
+                    value: 5
+                },{
+                    name: '10\'',
+                    value: 10
+                },{
+                    name: '15\'',
+                    value: 15
+                },{
+                    name: '20\'',
+                    value: 20
+                },{
+                    name: '30\'',
+                    value: 30
+                },{
+                    name: '1p',
+                    value: 60
+                },{
+                    name: '1p30\'',
+                    value: 90
+                },{
+                    name: '2p',
+                    value: 120
+                },{
+                    name: '2p30\'',
+                    value: 150
+                },{
+                    name: '3p',
+                    value: 180
+                },{
+                    name: '3p30\'',
+                    value: 210
+                },{
+                    name: '5p',
+                    value: 300
+                },{
+                    name: '10p',
+                    value: 600
+                },{
+                    name: '15p',
+                    value: 900
+                },{
+                    name: '20p',
+                    value: 1200
+                },];
+                $scope.timeClicks = timeClicks;
+            }
         }
     }]);
 })();
 
 
-// Un Subsribe
+// Un Subscribe
 // setTimeout(() => {
 //     $($subscribeButton).trigger('click');
 //     setTimeout(() => {

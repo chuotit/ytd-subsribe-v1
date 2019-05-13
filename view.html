@@ -1,3 +1,4 @@
+<html>
 <head>
 	<meta charset="utf-8">
 	<link rel="stylesheet" href="style.min.css" type="text/css">
@@ -10,7 +11,25 @@
 </head>
 
 <body ng-app="ytdApp" ng-controller="ytdController" ng-style='boyYtdStyle'>
-	<div id="player-container-outer"></div>
+	<div class="ytd-seo-panels">
+		<div class="ytd-seo-panels-container">
+			<div class="panel-setting">
+				<div class="fomr-container">
+					<input type="text" id="ytdLink" class="ytd-link" placeholder="Nhập link Youtube cần Sub" />
+					<input type="button" value="Auto Sub" onclick="startSubscribe()" class="ytd-submit">
+				</div>
+				<b>Cài đặt thời gian: </b>
+				<label class="{{liked ? 'green-color' : 'red-color'}}" for="timeOfLike">LIKE:</label>
+				<select id="timeOfLike" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfLike" ng-disabled="liked" ng-change="updateTimeClick()"></select>
+				<label class="{{subscribed && notifiCation ? 'green-color' : 'red-color'}}" for="timeOfSubscribe">SUBSCRIBE:</label>
+				<select id="timeOfSubscribe" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfSubscribe" ng-disabled="subscribed" ng-change="updateTimeClick()"></select>
+				<label class="{{commented ? 'green-color' : 'red-color'}}" for="timeOfComment">COMMENT:</label>
+				<select id="timeOfComment" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfComment" ng-disabled="commented" ng-change="updateTimeClick()"></select>
+				<label class="red-color" for="timeOfClose">CLOSE:</label>
+				<select id="timeOfClose" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfClose"></select>
+			</div>
+		</div>
+	</div>
 	<!-- Base HTML -->
 	<div class="base-html">
 		<!-- Comment -->
@@ -236,7 +255,7 @@
 					</div>
 				</paper-tooltip>
 			</a></ytd-toggle-button-renderer>
-		<!-- Subsribe -->
+		<!-- Subscribe -->
 		<ytd-subscribe-button-renderer class="style-scope ytd-video-secondary-info-renderer" new-subscribe-color="">
 
 			<paper-button noink="" class="style-scope ytd-subscribe-button-renderer" role="button" tabindex="0"
@@ -293,5 +312,6 @@
 			<div id="notification-preference-button" class="style-scope ytd-subscribe-button-renderer"></div>
 		</ytd-subscribe-button-renderer>
 	</div>
-	<script src="js.js"></script>
+	<!-- <script src="js.js"></script> -->
 </body>
+</html>
