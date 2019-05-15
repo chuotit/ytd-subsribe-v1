@@ -7,6 +7,7 @@
 // @require      https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js
 // @author       ytd
 // @match        https://www.youtube.com/*
+// @match        https://accounts.google.com/*
 // @grant        GM_getResourceText
 // @grant        GM_addStyle
 // @run-at       document-idle
@@ -63,7 +64,7 @@ body.ytd-watching-sub::before {
   
   .ytd-seo-panels {
     position: fixed;
-    top: 0;
+    bottom: 0;
     right: 0;
     background: #fff;
     border: 1px solid #ccc;
@@ -106,7 +107,7 @@ body.ytd-watching-sub::before {
   .ytd-seo-panels .green-color {
     color: #008000;
     font-weight: bold !important;
-  }
+  }  
 `);
 (function () {
     var app = angular.module("ytdApp", []);
@@ -138,7 +139,55 @@ body.ytd-watching-sub::before {
             
             let ytdUrl = new URLSearchParams(window.location.search);
 
+            if((window.location.href).indexOf('google.com')) {
+                if($('#identifierId').is(':visible') && $('#identifierId').attr('type') == 'email') {
+                    $timeout(function() {
+                        $('#identifierId').val('baochautranhoan');
+                        $timeout(function() {
+                            if($('#identifierId').val()) {
+                                $('.RveJvd.snByac').trigger('click');
+                                $timeout(function() {
+                                    if($('.whsOnd.zHQkBf').is(':visible') && $('.whsOnd.zHQkBf').attr('type') == 'password') {
+                                        $timeout(function() {
+                                            $('.whsOnd.zHQkBf').val('baochau2911');
+                                            $timeout(function() {
+                                                if($('.whsOnd.zHQkBf').val()) {
+                                                    $('.RveJvd.snByac').trigger('click');
+                                                    $timeout(function() {
+                                                        $('.ZFr60d.CeoRYc').trigger('click');
+                                                    }, 3000);
+                                                }
+                                            }, 1000);
+                                        }, 1000);
+                                    }
+                                }, 3000);
+                            }
+                        }, 1000);
+                    }, 1000);
+                } else {
+                    $timeout(function() {
+                        if($('.whsOnd.zHQkBf').is(':visible') && $('.whsOnd.zHQkBf').attr('type') == 'password') {
+                            $timeout(function() {
+                                $('.whsOnd.zHQkBf').val('baochau2911');
+                                $timeout(function() {
+                                    if($('.whsOnd.zHQkBf').val()) {
+                                        $('.RveJvd.snByac').trigger('click');
+                                        $timeout(function() {
+                                            $('.ZFr60d.CeoRYc').trigger('click');
+                                        }, 3000);
+                                    }
+                                }, 1000);
+                            }, 1000);
+                        }
+                    }, 3000);
+                }
+            }
+
             if(ytdUrl.has('timeOfLike') && ytdUrl.has('timeOfSubscribe') && ytdUrl.has('timeOfComment') && ytdUrl.has('timeOfClose')) {
+                if($('.style-suggestive').is(':visible')) {
+                    $('.style-suggestive').trigger('click');
+                }
+                
                 $scope.enableYtdHome = false;
                 $scope.timeOfLike = parseInt(ytdUrl.get('timeOfLike'));
                 $scope.timeOfSubscribe = parseInt(ytdUrl.get('timeOfSubscribe'));

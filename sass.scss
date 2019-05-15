@@ -1,17 +1,17 @@
-body {
-    width: 500px;
-    margin: auto;
-}
+// body {
+//     width: 500px;
+//     margin: auto;
+// }
 
-#seoPanels {
-    position: fixed;
-    top: -1000px;
-}
+// #seoPanels {
+//     position: fixed;
+//     top: -1000px;
+// }
 
-.base-html {
-    position: absolute;
-    top: 100%;
-}
+// .base-html {
+//     position: absolute;
+//     top: 100%;
+// }
 
 body.ytd-watching-sub::before {
     content: '';
@@ -31,7 +31,7 @@ iframe {
 }
 .ytd-seo-panels {
     position: fixed;
-    top: 0;
+    bottom: 0;
     right: 0;
     background: #fff;
     border: 1px solid #ccc;
