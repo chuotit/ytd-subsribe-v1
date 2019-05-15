@@ -10,23 +10,30 @@
 	</script>
 </head>
 
-<body ng-app="ytdApp" ng-controller="ytdController" ng-style='boyYtdStyle'>
+<body ng-app="ytdApp" ng-controller="ytdController" class="{{enableYtdHome ? '' : 'ytd-watching-sub'}}">
 	<div class="ytd-seo-panels">
 		<div class="ytd-seo-panels-container">
 			<div class="panel-setting">
-				<div class="fomr-container">
-					<input type="text" id="ytdLink" class="ytd-link" placeholder="Nhập link Youtube cần Sub" />
-					<input type="button" value="Auto Sub" onclick="startSubscribe()" class="ytd-submit">
+				<div class="fomr-container" ng-if="enableYtdHome">
+					<input type="text" id="ytdLink" ng-model="ytdLinkSubscribe" class="ytd-link" placeholder="Nhập link Youtube cần Sub" />
+					<input type="button" value="Auto Sub" ng-click="startSubscribe()" class="ytd-submit">
 				</div>
-				<b>Cài đặt thời gian: </b>
-				<label class="{{liked ? 'green-color' : 'red-color'}}" for="timeOfLike">LIKE:</label>
-				<select id="timeOfLike" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfLike" ng-disabled="liked" ng-change="updateTimeClick()"></select>
-				<label class="{{subscribed && notifiCation ? 'green-color' : 'red-color'}}" for="timeOfSubscribe">SUBSCRIBE:</label>
-				<select id="timeOfSubscribe" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfSubscribe" ng-disabled="subscribed" ng-change="updateTimeClick()"></select>
-				<label class="{{commented ? 'green-color' : 'red-color'}}" for="timeOfComment">COMMENT:</label>
-				<select id="timeOfComment" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfComment" ng-disabled="commented" ng-change="updateTimeClick()"></select>
-				<label class="red-color" for="timeOfClose">CLOSE:</label>
-				<select id="timeOfClose" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfClose"></select>
+				<p ng-if="!enableYtdHome"><b>Đang xem: </b><span class="ytd-view-seconds"></span> giây</p>
+				<div class="setting-item">
+					<b>Cài đặt thời gian: </b>
+					<label class="{{liked ? 'green-color' : 'red-color'}}" for="timeOfLike">LIKE:</label>
+					<select id="timeOfLike" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfLike" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+					<label class="{{subscribed && notifiCation ? 'green-color' : 'red-color'}}" for="timeOfSubscribe">SUBSCRIBE:</label>
+					<select id="timeOfSubscribe" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfSubscribe" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+					<label class="{{commented ? 'green-color' : 'red-color'}}" for="timeOfComment">COMMENT:</label>
+					<select id="timeOfComment" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfComment" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+					<label class="red-color" for="timeOfClose">CLOSE:</label>
+					<select id="timeOfClose" ng-options="item.value as item.name for item in timeClicks" ng-disabled="!enableYtdHome" ng-model="timeOfClose"></select>
+				</div>
+				<div class="setting-item" ng-if="!enableYtdHome">
+					<b>Tùy chọn nội dung comment: </b>
+					<select id="textComment" ng-options="item.no as item.text for item in listTextComments" ng-model="itemTextComment"></select>
+				</div>
 			</div>
 		</div>
 	</div>

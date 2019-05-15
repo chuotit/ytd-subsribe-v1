@@ -23,27 +23,34 @@ $('body').append(`
                 <input type="button" value="Auto Sub" ng-click="startSubscribe()" class="ytd-submit">
             </div>
             <p ng-if="!enableYtdHome"><b>Đang xem: </b><span class="ytd-view-seconds"></span> giây</p>
-            <b>Cài đặt thời gian: </b>
-            <label class="{{liked ? 'green-color' : 'red-color'}}" for="timeOfLike">LIKE:</label>
-            <select id="timeOfLike" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfLike" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
-            <label class="{{subscribed && notifiCation ? 'green-color' : 'red-color'}}" for="timeOfSubscribe">SUBSCRIBE:</label>
-            <select id="timeOfSubscribe" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfSubscribe" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
-            <label class="{{commented ? 'green-color' : 'red-color'}}" for="timeOfComment">COMMENT:</label>
-            <select id="timeOfComment" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfComment" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
-            <label class="red-color" for="timeOfClose">CLOSE:</label>
-            <select id="timeOfClose" ng-options="item.value as item.name for item in timeClicks" ng-disabled="!enableYtdHome" ng-model="timeOfClose"></select>
+            <div class="setting-item">
+                <b>Cài đặt thời gian: </b>
+                <label class="{{liked ? 'green-color' : 'red-color'}}" for="timeOfLike">LIKE:</label>
+                <select id="timeOfLike" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfLike" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+                <label class="{{subscribed && notifiCation ? 'green-color' : 'red-color'}}" for="timeOfSubscribe">SUBSCRIBE:</label>
+                <select id="timeOfSubscribe" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfSubscribe" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+                <label class="{{commented ? 'green-color' : 'red-color'}}" for="timeOfComment">COMMENT:</label>
+                <select id="timeOfComment" ng-options="item.value as item.name for item in timeClicks" ng-model="timeOfComment" ng-disabled="!enableYtdHome" ng-change="updateTimeClick()"></select>
+                <label class="red-color" for="timeOfClose">CLOSE:</label>
+                <select id="timeOfClose" ng-options="item.value as item.name for item in timeClicks" ng-disabled="!enableYtdHome" ng-model="timeOfClose"></select>
+            </div>
+            <div class="setting-item" ng-if="!enableYtdHome">
+                <b>Tùy chọn nội dung comment: </b>
+                <select id="textComment" ng-options="item.no as item.text for item in listTextComments" ng-model="itemTextComment"></select>
+            </div>
         </div>
     </div>
 </div>
 `);
 GM_addStyle(`
-body::before {
+body.ytd-watching-sub::before {
     content: "";
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
+    z-index: 1;
   }
   
   iframe {
@@ -86,6 +93,9 @@ body::before {
     height: 30px;
     width: 80px;
   }
+  .ytd-seo-panels .panel-setting .setting-item {
+    margin-top: 5px;
+  }
   .ytd-seo-panels .panel-setting select {
     margin-right: 10px;
   }
@@ -103,6 +113,7 @@ body::before {
     app.controller("ytdController", ['$scope', '$timeout', '$interval', '$http', function ($scope, $timeout, $interval, $http) {
         $scope.timerStart;
         $scope.showPanel = true;
+        $scope.itemTextComment;
         $timeout(function () {
             start();
         }, 1500);
@@ -123,6 +134,7 @@ body::before {
             $scope.liked = false;
             $scope.notifiCation = false;
             $scope.enableYtdHome = false;
+            $scope.timeClicks = getTimeForClick();
             
             let ytdUrl = new URLSearchParams(window.location.search);
 
@@ -137,6 +149,10 @@ body::before {
                     timer = 0,
                     $subscribeButton = $('.ytd-subscribe-button-renderer')[0],
                     attrSubscribe = $subscribeButton.hasAttribute('subscribed');
+                    $scope.listTextComments = getListTextComments();
+                    if(!$scope.itemTextComment) {
+                        $scope.itemTextComment = Math.floor(Math.random() * $scope.listTextComments.length + 1);
+                    }
         
                     // Check like status
                     if ($('ytd-toggle-button-renderer.force-icon-button').hasClass('style-default-active')) {
@@ -190,7 +206,7 @@ body::before {
                             if (commentVisible) {
                                 if(!$scope.commented) {
                                     $($('#placeholder-area')[0]).trigger('click');
-                                    $('#contenteditable-root').text('Hay quá!!!');
+                                    $('#contenteditable-root').text($scope.listTextComments[$scope.itemTextComment - 1].text);
                                     $('#submit-button.ytd-commentbox').removeAttr('disabled').trigger('click').attr('disabled');
                                     $scope.commented = !$scope.commented;
                                     setTimeout(() => {
@@ -269,8 +285,8 @@ body::before {
                     window.open(ytdLinkSubscribe, '_blank', 'width=688, height=800');
                     ytdLink.value = '';
                 }
-            }         
-            getTimeForClick();
+            };
+
             function getTimeForClick() {
                 var timeClicks = [{
                     name: '5\'',
@@ -318,7 +334,47 @@ body::before {
                     name: '20p',
                     value: 1200
                 },];
-                $scope.timeClicks = timeClicks;
+                return timeClicks;
+            };
+
+            function getListTextComments() {
+                var listTextComments = [{
+                    no: 1,
+                    text: 'Hay quá, mong ad upload thêm nhiều video hay hơn nữa.'
+                },{
+                    no: 2,
+                    text: 'Nội dung video rất ý nghĩa, thanks ad.'
+                },{
+                    no: 3,
+                    text: 'Video hay, người làm video rất có tâm.'
+                },{
+                    no: 4,
+                    text: 'Video hay ghê.'
+                },{
+                    no: 5,
+                    text: 'Cám ơn người úp video nhé.'
+                },{
+                    no: 6,
+                    text: 'Tuyệt phẩm, mọi người ủng hộ nhé.'
+                },{
+                    no: 7,
+                    text: 'Nội dung video rất thú vị.'
+                },{
+                    no: 8,
+                    text: 'Hay lắm bạn.'
+                },{
+                    no: 9,
+                    text: 'Mong ad sớm ra video mới nữa.'
+                },{
+                    no: 10,
+                    text: 'Video tuyệt lắm bạn.'
+                }];
+                return listTextComments;
+            };
+            function getRandomTextcomment() {
+                var listTextComment = getListTextComments(),
+                    textComment = '';
+                return textComment;
             }
         }
     }]);

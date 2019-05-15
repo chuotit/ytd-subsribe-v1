@@ -13,7 +13,7 @@ body {
     top: 100%;
 }
 
-body::before {
+body.ytd-watching-sub::before {
     content: '';
     position: fixed;
     top: 0;
@@ -61,6 +61,9 @@ iframe {
         }
     }
     .panel-setting {
+        .setting-item {
+            margin-top: 5px;
+        }
         select {
             margin-right: 10px;
         }
