@@ -141,46 +141,58 @@ body.ytd-watching-sub::before {
 
             if((window.location.href).indexOf('google.com')) {
                 if($('#identifierId').is(':visible') && $('#identifierId').attr('type') == 'email') {
+                    loginGoogle('baochautranhoan');
+                }
+
+                function loginGoogle(gmail) {
+                    $('#identifierId').val(gmail);
                     $timeout(function() {
-                        $('#identifierId').val('baochautranhoan');
-                        $timeout(function() {
-                            if($('#identifierId').val()) {
-                                $('.RveJvd.snByac').trigger('click');
-                                $timeout(function() {
-                                    if($('.whsOnd.zHQkBf').is(':visible') && $('.whsOnd.zHQkBf').attr('type') == 'password') {
-                                        $timeout(function() {
-                                            $('.whsOnd.zHQkBf').val('baochau2911');
-                                            $timeout(function() {
-                                                if($('.whsOnd.zHQkBf').val()) {
-                                                    $('.RveJvd.snByac').trigger('click');
-                                                    $timeout(function() {
-                                                        $('.ZFr60d.CeoRYc').trigger('click');
-                                                    }, 3000);
-                                                }
-                                            }, 1000);
-                                        }, 1000);
-                                    }
-                                }, 3000);
-                            }
-                        }, 1000);
-                    }, 1000);
-                } else {
-                    $timeout(function() {
-                        if($('.whsOnd.zHQkBf').is(':visible') && $('.whsOnd.zHQkBf').attr('type') == 'password') {
+                        if($('#identifierId').val()) {
+                            $('.RveJvd.snByac').trigger('click');
                             $timeout(function() {
-                                $('.whsOnd.zHQkBf').val('baochau2911');
-                                $timeout(function() {
-                                    if($('.whsOnd.zHQkBf').val()) {
-                                        $('.RveJvd.snByac').trigger('click');
+                                enterPassword('baochau2911');
+                            }, 3000);
+                        }
+                    }, 1000);
+                }
+
+                function enterPassword(password) {
+                    if($('.whsOnd.zHQkBf').is(':visible') && $('.whsOnd.zHQkBf').attr('type') == 'password') {
+                        $timeout(function() {
+                            $('.whsOnd.zHQkBf').val(password);
+                            $timeout(function() {
+                                if($('.whsOnd.zHQkBf').val()) {
+                                    $('.RveJvd.snByac').trigger('click');
+                                    $timeout(function() {
+                                        $('.ZFr60d.CeoRYc').trigger('click');
+                                    }, 3000);
+                                }
+                            }, 1000);
+                        }, 1000);
+                    }
+                }
+                
+                $timeout(function() {
+                    if($('.Z4o1ee.GyDlGb.cd29Sd.iiFyne').is(':visible')) {
+                        $('.Z4o1ee.GyDlGb.cd29Sd.iiFyne').trigger('click');
+                        $timeout(function() {
+                            $('.vR13fe.k6Zj8d.SmR8').each(function(index) {
+                                if($($('.vR13fe.k6Zj8d.SmR8')[index]).attr('jsname') == 'o7vT9b') {
+                                    $($('.vR13fe.k6Zj8d.SmR8')[index]).trigger('click');
+                                    $timeout(function() {
+                                        $('.M8HEDc.ibdqA.cd29Sd.bxPAYd.W7Aapd.SmR8.znIWoc').find('.vR13fe.k6Zj8d.SmR8').trigger('click');
                                         $timeout(function() {
                                             $('.ZFr60d.CeoRYc').trigger('click');
-                                        }, 3000);
-                                    }
-                                }, 1000);
-                            }, 1000);
-                        }
-                    }, 3000);
-                }
+                                            $timeout(function() {
+                                                loginGoogle('baochautranhoan');
+                                            }, 1500);
+                                        }, 1000);
+                                    }, 1000);
+                                }
+                            });
+                        }, 1500);
+                    }
+                }, 1000);
             }
 
             if(ytdUrl.has('timeOfLike') && ytdUrl.has('timeOfSubscribe') && ytdUrl.has('timeOfComment') && ytdUrl.has('timeOfClose')) {
